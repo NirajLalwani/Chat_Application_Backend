@@ -8,16 +8,16 @@ dotenv.config();
 const connectDB = require("./DB/connection")
 const userRouter = require('./Routes/userRoutes');
 
-//&MiddleWares
-app.use(cors());
-app.use(express.json());
-app.use('/api/', userRouter);
 
 
 const socket = require('socket.io')
 const server = http.createServer(app);
 const io = socket(server)
 
+//&MiddleWares
+app.use(cors());
+app.use(express.json());
+app.use('/api/', userRouter);
 
 //&Socket IO
 let users = [];
