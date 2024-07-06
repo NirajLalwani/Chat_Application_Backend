@@ -10,9 +10,9 @@ const userRouter = require('./Routes/userRoutes');
 
 
 
-const socket = require('socket.io')
 const server = http.createServer(app);
-const io = socket(server)
+const io = require('socket.io').listen(server)
+
 
 //&MiddleWares
 app.use(cors());
