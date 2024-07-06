@@ -2,16 +2,20 @@ const express = require('express');
 const app = express();
 const dotenv = require('dotenv');
 const cors = require('cors');
-const http = require('http')
 dotenv.config();
 //&Import Files 
 const connectDB = require("./DB/connection")
 const userRouter = require('./Routes/userRoutes');
+const io = require('socket.io')(8080,{
+    cors:{
+        origin:process.env.CLIENT_URL
+    }
+}
+
+)
 
 
 
-const server = http.createServer(app);
-const io = require('socket.io').listen(server)
 
 
 //&MiddleWares
