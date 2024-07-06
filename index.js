@@ -6,9 +6,10 @@ dotenv.config();
 //&Import Files 
 const connectDB = require("./DB/connection")
 const userRouter = require('./Routes/userRoutes');
-const io = require('socket.io')(8080,{
-    cors:{
-        origin:process.env.CLIENT_URL
+const server = require("http").createServer(app)
+const io = require('socket.io')(server, {
+    cors: {
+        origin: process.env.CLIENT_URL
     }
 }
 
@@ -76,7 +77,7 @@ io.on('connection', socket => {
 
 
 const PORT = process.env.PORT || 4000
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log("Server Started on ", PORT);
     connectDB();
 })
