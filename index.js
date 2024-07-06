@@ -13,17 +13,9 @@ app.use(express.json());
 app.use('/api/', userRouter);
 
 
-const io = require('socket.io')(8080, {
-    cors: {
-        origin: "http://localhost:5173"
-    }
-})
-
-
-
-
-
-
+const socket = require('socket.io')
+const server = http.createServer(app);
+const io = socket(server)
 
 
 //&Socket IO
