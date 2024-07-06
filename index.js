@@ -20,7 +20,9 @@ const io = require('socket.io')(server, {
 
 
 //&MiddleWares
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:5173"
+}));
 app.use(express.json());
 app.use('/api/', userRouter);
 
