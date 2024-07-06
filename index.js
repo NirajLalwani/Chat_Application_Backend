@@ -21,7 +21,7 @@ const io = require('socket.io')(server, {
 
 //&MiddleWares
 app.use(cors({
-    origin: "https://chat-application-client-zeta.vercel.app/"
+    origin: "https://chat-application-client-zeta.vercel.app"
 }));
 app.use(express.json());
 app.use('/api/', userRouter);
