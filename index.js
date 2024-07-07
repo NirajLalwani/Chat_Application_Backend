@@ -1,12 +1,13 @@
 const express = require('express');
 const app = express();
 const dotenv = require('dotenv');
-const cors = require('cors');
 dotenv.config();
+const cors = require('cors');
+
 //&Import Files 
 const connectDB = require("./DB/connection")
 const userRouter = require('./Routes/userRoutes');
-const server = require("http").createServer(app)
+const server = require("http").createServer(app) //?Creating server for both socketio and Express app
 const io = require('socket.io')(server, {
     cors: {
         origin: "*"
@@ -16,15 +17,13 @@ const io = require('socket.io')(server, {
 )
 
 
-
-
-
 //&MiddleWares
 app.use(cors({
-    origin: "https://chat-application-client-two.vercel.app"
+    origin: "https://chat-application-client-two.vercel.app"  //?Allowing access only to this source
 }));
-app.use(express.json());
+app.use(express.json());        //?Add body in request
 app.use('/api/', userRouter);
+
 
 //&Socket IO
 let users = [];
@@ -43,7 +42,7 @@ io.on('connection', socket => {
     socket.on("removeUser", (userId) => {
         users = users.filter(curr => curr.userId !== userId);
         io.emit("getUsers", users)
-        console.log("Users", users)
+
     })
 
 

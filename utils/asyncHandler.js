@@ -4,7 +4,7 @@ const asyncHandler = (func) => (req, res, next) => {
             console.log("Error Occured", error)
         });
     } catch (error) {
-        console.log("Error Occurred")
+        console.log("Error Occurred In AsyncHandler")
         console.log(error)
     }
 
