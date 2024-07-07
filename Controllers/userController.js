@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken")
 //~Models
 const Users = require("../models/Users")
 const Conversation = require('../models/Conserversations')
-const Message = require("../models/Messages");
+const Messages = require("../models/Messages");
 
 
 
