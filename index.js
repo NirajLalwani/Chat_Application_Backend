@@ -20,8 +20,8 @@ const io = require('socket.io')(server, {
 
 //&MiddleWares
 app.use(cors({
-    origin: "https://chat-application-client-two.vercel.app"  //?Allowing access only to this source
-    // origin: "http://localhost:5173"
+    // origin: "https://chat-application-client-two.vercel.app"  //?Allowing access only to this source
+    origin: "http://localhost:5173"
 }));
 app.use(express.json());        //?Add body in request
 app.use('/api/', userRouter);
