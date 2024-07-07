@@ -96,7 +96,7 @@ const GetConversationFunction = asyncHandler(async (req, res, next) => {
         const allConverstion = await Conversation.find({ $or: [{ User_1: userId }, { User_2: userId }] })
 
 
-        const OtherUserData = await Promise.all(allConverstion.map(async ({ User_1, User_2, _id }) => {             //?Mapping all conversation to send only receiver's data
+        const OtherUserData = await Promise.all(allConverstion.map(async ({ User_1, User_2, _id, latestMessage }) => {             //?Mapping all conversation to send only receiver's data
 
             let secondUserId = (User_1 === userId) ? User_2 : User_1;  //?Finding which one is receiver
 
@@ -109,7 +109,8 @@ const GetConversationFunction = asyncHandler(async (req, res, next) => {
                     email: CurrUser.email,
                     image: CurrUser.image,
                     ConversationId: _id,
-                    userId: CurrUser._id
+                    userId: CurrUser._id,
+                    latestMessage: latestMessage
                 }
                 return CurrUser
             }
@@ -131,6 +132,10 @@ const CreateMessageFunction = asyncHandler(async (req, res, next) => {
     const { conversationId, senderId, message } = req.body;
     if (!senderId || !message) return res.status(400).json({ message: "Please Fill all required fields" })
     await Message.create({ conversationId, senderId, message });
+    await Conversation.updateOne(
+        { "_id": conversationId },
+        { $set: { "latestMessage": message } }
+    )
     return res.status(200).json({ message: 'Message sent   successfully' });
 
 })

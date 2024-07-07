@@ -7,6 +7,7 @@ const cors = require('cors');
 //&Import Files 
 const connectDB = require("./DB/connection")
 const userRouter = require('./Routes/userRoutes');
+const Conversation = require('./models/Conserversations');
 const server = require("http").createServer(app) //?Creating server for both socketio and Express app
 const io = require('socket.io')(server, {
     cors: {
@@ -20,7 +21,7 @@ const io = require('socket.io')(server, {
 //&MiddleWares
 app.use(cors({
     origin: "https://chat-application-client-two.vercel.app"  //?Allowing access only to this source
-    // 
+    // origin: "http://localhost:5173"
 }));
 app.use(express.json());        //?Add body in request
 app.use('/api/', userRouter);
@@ -54,11 +55,12 @@ io.on('connection', socket => {
             const data = {
                 senderId,
                 message,
-                conversationId
+                conversationId,
             }
             io.to(receiver.socketId).to(sender.socket).emit('getMessage', data)
         }
     })
+
     socket.on("createConversation", ({ fullName, email, image, conversationId, userId, receiverId }) => {
         const receiver = users.find(user => user.userId === receiverId);
         if (receiver) {

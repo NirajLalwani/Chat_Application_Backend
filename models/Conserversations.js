@@ -11,6 +11,11 @@ const conversationSchema = mongoose.Schema({
     User_2: {
         type: String,
         required: true
+    },
+    latestMessage: {
+        type: String,
+        required: false,
+        default: ""
     }
 })
 
