@@ -49,6 +49,8 @@ io.on('connection', socket => {
 
 
     socket.on("sendMessage", ({ senderId, receiverId, message, conversationId }) => {
+
+
         const receiver = users.find(user => user.userId === receiverId);
         const sender = users.find(user => user.userId === senderId);
         if (receiver) {
@@ -58,6 +60,16 @@ io.on('connection', socket => {
                 conversationId,
             }
             io.to(receiver.socketId).to(sender.socket).emit('getMessage', data)
+        }
+    })
+    socket.on("updateLatestMessage", ({ receiverId, message, conversationId }) => {
+        const receiver = users.find(user => user.userId === receiverId);
+        if (receiver) {
+            const data = {
+                message,
+                conversationId,
+            }
+            io.to(receiver.socketId).emit('getLatestMessage', data)
         }
     })
 
