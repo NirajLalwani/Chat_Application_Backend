@@ -48,7 +48,7 @@ io.on('connection', socket => {
     })
 
 
-    socket.on("sendMessage", ({ senderId, receiverId, message, conversationId, time }) => {
+    socket.on("sendMessage", ({ senderId, receiverId, message, conversationId, time, date }) => {
 
         const receiver = users.find(user => user.userId === receiverId);
         const sender = users.find(user => user.userId === senderId);
@@ -56,7 +56,8 @@ io.on('connection', socket => {
             senderId,
             message,
             conversationId,
-            time
+            time,
+            date
         }
         if (receiver) {
             io.to(receiver.socketId).to(sender.socketId).emit('getMessage', data)
