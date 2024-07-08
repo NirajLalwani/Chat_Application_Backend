@@ -48,7 +48,7 @@ io.on('connection', socket => {
     })
 
 
-    socket.on("sendMessage", ({ senderId, receiverId, message, conversationId }) => {
+    socket.on("sendMessage", ({ senderId, receiverId, message, conversationId,time }) => {
 
         const receiver = users.find(user => user.userId === receiverId);
         const sender = users.find(user => user.userId === senderId);
