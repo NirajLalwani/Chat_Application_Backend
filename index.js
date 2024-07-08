@@ -52,24 +52,28 @@ io.on('connection', socket => {
 
         const receiver = users.find(user => user.userId === receiverId);
         const sender = users.find(user => user.userId === senderId);
+        const data = {
+            senderId,
+            message,
+            conversationId,
+        }
         if (receiver) {
-            const data = {
-                senderId,
-                message,
-                conversationId,
-            }
             io.to(receiver.socketId).to(sender.socketId).emit('getMessage', data)
+        } else {
+            io.to(sender.socketId).emit('getMessage', data)
         }
     })
-    socket.on("updateLatestMessage", ({ senderId,receiverId, message, conversationId }) => {
+    socket.on("updateLatestMessage", ({ senderId, receiverId, message, conversationId }) => {
         const sender = users.find(user => user.userId === senderId);
         const receiver = users.find(user => user.userId === receiverId);
+        const data = {
+            message,
+            conversationId,
+        }
         if (receiver) {
-            const data = {
-                message,
-                conversationId,
-            }
             io.to(receiver.socketId).to(sender.socketId).emit('getLatestMessage', data)
+        } else {
+            io.to(sender.socketId).emit('getLatestMessage', data)
         }
     })
 
