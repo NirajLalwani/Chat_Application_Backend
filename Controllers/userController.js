@@ -129,7 +129,7 @@ const GetConversationFunction = asyncHandler(async (req, res, next) => {
 
 // ********************************************************************
 const CreateMessageFunction = asyncHandler(async (req, res, next) => {
-    const { conversationId, senderId, message } = req.body;
+    const { conversationId, senderId, message, time } = req.body;
     if (!senderId || !message) return res.status(400).json({ message: "Please Fill all required fields" })
     await Message.create({ conversationId, senderId, message });
     await Conversation.updateOne(
