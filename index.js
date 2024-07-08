@@ -68,7 +68,7 @@ io.on('connection', socket => {
             const data = {
                 message,
                 conversationId,
-            }essages
+            }
             io.to(receiver.socketId).emit('getLatestMessage', data)
         }
     })
