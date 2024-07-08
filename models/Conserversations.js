@@ -16,6 +16,11 @@ const conversationSchema = mongoose.Schema({
         type: String,
         required: false,
         default: ""
+    },
+    latestMessageTime: {
+        type: String,
+        required: false,
+        default: ""
     }
 })
 
