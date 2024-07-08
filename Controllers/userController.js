@@ -111,7 +111,7 @@ const GetConversationFunction = asyncHandler(async (req, res, next) => {
                     ConversationId: _id,
                     userId: CurrUser._id,
                     latestMessage: latestMessage,
-                    time
+                    time: time
                 }
                 return CurrUser
             }
