@@ -21,6 +21,9 @@ const conversationSchema = mongoose.Schema({
         type: String,
         required: false,
         default: ""
+    },
+    latestMessageDate: {
+        type: String
     }
 })
 

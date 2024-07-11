@@ -12,6 +12,7 @@ const server = require("http").createServer(app) //?Creating server for both soc
 const io = require('socket.io')(server, {
     cors: {
         origin: "*"
+
     }
 }
 
@@ -19,10 +20,12 @@ const io = require('socket.io')(server, {
 
 
 //&MiddleWares
-app.use(cors({
-    origin: "https://chat-application-client-two.vercel.app"  //?Allowing access only to this source
-    // origin: "http://localhost:5173"
-}));
+app.use(cors(
+
+    {
+        origin: "https://chat-application-client-two.vercel.app"  //?Allowing access only to this source
+    }
+));
 app.use(express.json());        //?Add body in request
 app.use('/api/', userRouter);
 
@@ -61,25 +64,13 @@ io.on('connection', socket => {
         }
         if (receiver) {
             io.to(receiver.socketId).to(sender.socketId).emit('getMessage', data)
-        } else {
-            io.to(sender.socketId).emit('getMessage', data)
-        }
-    })
-
-    socket.on("updateLatestMessage", ({ senderId, receiverId, message, conversationId, time }) => {
-        const sender = users.find(user => user.userId === senderId);
-        const receiver = users.find(user => user.userId === receiverId);
-        const data = {
-            message,
-            conversationId,
-            time
-        }
-        if (receiver) {
             io.to(receiver.socketId).to(sender.socketId).emit('getLatestMessage', data)
         } else {
+            io.to(sender.socketId).emit('getMessage', data)
             io.to(sender.socketId).emit('getLatestMessage', data)
         }
     })
+
 
     socket.on("createConversation", ({ fullName, email, image, conversationId, userId, receiverId }) => {
         const receiver = users.find(user => user.userId === receiverId);
@@ -95,6 +86,29 @@ io.on('connection', socket => {
         }
     })
 
+    socket.on("clearChat", ({ senderId, receiverId, conversationId }) => {
+        const sender = users.find(user => user.userId === senderId);
+        const receiver = users.find(user => user.userId === receiverId);
+        const data = { messages: [], conversationId, ClearChat: true }
+        if (receiver) {
+            io.to(receiver.socketId).to(sender.socketId).emit('getClearedChat', data)
+            io.to(receiver.socketId).to(sender.socketId).emit('getLatestMessage', data)
+        } else {
+            io.to(sender.socketId).emit('getLatestMessage', data)
+            io.to(sender.socketId).emit('getClearedChat', data)
+        }
+    })
+
+    socket.on("deleteConversation", ({ senderId, receiverId }) => {
+        const sender = users.find(user => user.userId === senderId);
+        const receiver = users.find(user => user.userId === receiverId);
+        const data = {}
+        if (receiver) {
+            io.to(receiver.socketId).to(sender.socketId).emit('getDelteConversation', data)
+        } else {
+            io.to(sender.socketId).emit('getDelteConversation', data)
+        }
+    })
 })
 
 

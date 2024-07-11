@@ -96,7 +96,7 @@ const GetConversationFunction = asyncHandler(async (req, res, next) => {
         const allConverstion = await Conversation.find({ $or: [{ User_1: userId }, { User_2: userId }] })
 
 
-        const OtherUserData = await Promise.all(allConverstion.map(async ({ User_1, User_2, _id, latestMessage, latestMessageTime }) => {             //?Mapping all conversation to send only receiver's data
+        const OtherUserData = await Promise.all(allConverstion.map(async ({ User_1, User_2, _id, latestMessage, latestMessageTime, latestMessageDate }) => {             //?Mapping all conversation to send only receiver's data
 
             let secondUserId = (User_1 === userId) ? User_2 : User_1;  //?Finding which one is receiver
 
@@ -111,7 +111,8 @@ const GetConversationFunction = asyncHandler(async (req, res, next) => {
                     ConversationId: _id,
                     userId: CurrUser._id,
                     latestMessage: latestMessage,
-                    time: latestMessageTime
+                    time: latestMessageTime,
+                    date: latestMessageDate
                 }
                 return CurrUser
             }
@@ -135,7 +136,7 @@ const CreateMessageFunction = asyncHandler(async (req, res, next) => {
     await Message.create({ conversationId, senderId, message, time, date });
     await Conversation.updateOne(
         { "_id": conversationId },
-        { $set: { "latestMessage": message, "latestMessageTime": time } }
+        { $set: { "latestMessage": message, "latestMessageTime": time, 'latestMessageDate': date } }
     )
     return res.status(200).json({ message: 'Message sent   successfully' });
 
@@ -190,15 +191,22 @@ const GetUser = asyncHandler(async (req, res, next) => {
 })
 // ********************************************************************
 const ClearChat = asyncHandler(async (req, res, next) => {
-    const { senderId, receiverId, conversationId } = req.body;
+    const { conversationId } = req.body;
     await Messages.deleteMany({ conversationId });
-    Conversation.updateOne({_id:conversationId},{$set:{"latestMessage":''}})
+    await Conversation.updateOne(
+        { "_id": conversationId },
+        { $set: { "latestMessage": "" } }
+    )
     res.status(200).json({ "messages": "Chat Deleted Successfully" });
 })
 // ********************************************************************
 // ********************************************************************
 const DeleteConversation = asyncHandler(async (req, res, next) => {
-    
+    console.log("Delete Conversation Called");
+    const { conversationId } = req.body;
+    await Messages.deleteMany({ conversationId });
+    await Conversation.deleteOne({ _id: conversationId });
+    res.status(200).json({ "messages": "Conversation Deleted Successfully" })
 })
 // ********************************************************************
 
