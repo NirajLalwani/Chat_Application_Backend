@@ -19,9 +19,10 @@ const io = require('socket.io')(server, {
 
 
 //&MiddleWares
-app.use(cors());
-// origin: "https://chat-application-client-two.vercel.app"  //?Allowing access only to this source
-// origin: "http://localhost:5173"
+app.use(cors({
+    origin: "https://chat-application-client-two.vercel.app"  //?Allowing access only to this source
+    // origin: "http://localhost:5173"
+}));
 app.use(express.json());        //?Add body in request
 app.use('/api/', userRouter);
 
@@ -91,16 +92,6 @@ io.on('connection', socket => {
                 userId,
             }
             io.to(receiver.socketId).emit('getConversation', data)
-        }
-    })
-    socket.on("clearChat", ({ senderId, receiverId }) => {
-        const sender = users.find(user => user.userId === senderId);
-        const receiver = users.find(user => user.userId === receiverId);
-        const data = { messages: [] }
-        if (receiver) {
-            io.to(receiver.socketId).to(sender.socketId).emit('getClearedChat', data)
-        } else {
-            io.to(sender.socketId).emit('getClearedChat', data)
         }
     })
 
