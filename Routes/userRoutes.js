@@ -15,7 +15,8 @@ router.route('/message/:conversationId').get(userController.GetMessageFunction)
 router.route('/users').get(userController.GetAllUsers)
 router.route('/user/:token').get(userController.GetUser)
 
-
+router.route('/delteConversation').delete(userController.DeleteConversation)
+router.route('/clearChat').delete(userController.ClearChat)
 
 
 

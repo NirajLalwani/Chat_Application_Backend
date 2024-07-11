@@ -169,6 +169,7 @@ const GetAllUsers = asyncHandler(async (req, res, next) => {
 
 
 // ********************************************************************
+// ********************************************************************
 const GetUser = asyncHandler(async (req, res, next) => {
 
     const token = req.params.token;
@@ -188,8 +189,19 @@ const GetUser = asyncHandler(async (req, res, next) => {
 
 })
 // ********************************************************************
+const ClearChat = asyncHandler(async (req, res, next) => {
+    const { senderId, receiverId, conversationId } = req.body;
+    await Messages.delete({ conversationId });
+    res.status(200).json({ "messages": "Chat Deleted Successfully" });
+})
+// ********************************************************************
+// ********************************************************************
+const DeleteConversation = asyncHandler(async (req, res, next) => {
+
+})
+// ********************************************************************
 
 
 
 
-module.exports = { Register, Login, GetConversationFunction, CreateMessageFunction, GetMessageFunction, GetAllUsers, GetUser, CreateConversationFunction }
+module.exports = { Register, Login, GetConversationFunction, CreateMessageFunction, GetMessageFunction, GetAllUsers, GetUser, CreateConversationFunction, ClearChat, DeleteConversation }
