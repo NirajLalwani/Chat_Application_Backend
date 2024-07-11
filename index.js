@@ -93,6 +93,16 @@ io.on('connection', socket => {
             io.to(receiver.socketId).emit('getConversation', data)
         }
     })
+    socket.on("clearChat", ({ senderId, receiverId }) => {
+        const sender = users.find(user => user.userId === senderId);
+        const receiver = users.find(user => user.userId === receiverId);
+        const data = { messages: [] }
+        if (receiver) {
+            io.to(receiver.socketId).to(sender.socketId).emit('getClearedChat', data)
+        } else {
+            io.to(sender.socketId).emit('getClearedChat', data)
+        }
+    })
 
 })
 
