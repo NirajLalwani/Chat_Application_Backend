@@ -191,7 +191,7 @@ const GetUser = asyncHandler(async (req, res, next) => {
 // ********************************************************************
 const ClearChat = asyncHandler(async (req, res, next) => {
     const { senderId, receiverId, conversationId } = req.body;
-    await Messages.delete({ conversationId });
+    await Messages.deleteMany({ conversationId });
     res.status(200).json({ "messages": "Chat Deleted Successfully" });
 })
 // ********************************************************************
