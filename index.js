@@ -3,6 +3,7 @@ const app = express();
 const dotenv = require('dotenv');
 dotenv.config();
 const cors = require('cors');
+const Message = require('./models/Messages')
 
 //&Import Files 
 const connectDB = require("./DB/connection")
@@ -20,12 +21,10 @@ const io = require('socket.io')(server, {
 
 
 //&MiddleWares
-app.use(cors(
-
-    {
-        origin: "https://chat-application-client-two.vercel.app"  //?Allowing access only to this source
-    }
-));
+app.use(cors());
+// {
+//     origin: "https://chat-application-client-two.vercel.app"  //?Allowing access only to this source
+// }
 app.use(express.json());        //?Add body in request
 app.use('/api/', userRouter);
 
@@ -51,7 +50,7 @@ io.on('connection', socket => {
     })
 
 
-    socket.on("sendMessage", ({ senderId, receiverId, message, conversationId, time, date }) => {
+    socket.on("sendMessage", ({ senderId, receiverId, message, conversationId, time, date, _id = "" }) => {
 
         const receiver = users.find(user => user.userId === receiverId);
         const sender = users.find(user => user.userId === senderId);
@@ -60,7 +59,8 @@ io.on('connection', socket => {
             message,
             conversationId,
             time,
-            date
+            date,
+            _id
         }
         if (receiver) {
             io.to(receiver.socketId).to(sender.socketId).emit('getMessage', data)
@@ -107,6 +107,17 @@ io.on('connection', socket => {
             io.to(receiver.socketId).to(sender.socketId).emit('getDelteConversation', data)
         } else {
             io.to(sender.socketId).emit('getDelteConversation', data)
+        }
+    })
+    socket.on("getMessagesAfterDelete", async ({ senderId, receiverId, conversationId }) => {
+        const sender = users.find(user => user.userId === senderId);
+        const receiver = users.find(user => user.userId === receiverId);
+        const messagess = await Message.find({ conversationId })
+
+        if (receiver) {
+            io.to(receiver.socketId).to(sender.socketId).emit('getMessagessAfterDeleting', messagess)
+        } else {
+            io.to(sender.socketId).emit('getMessagessAfterDeleting', messagess)
         }
     })
 })

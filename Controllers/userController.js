@@ -133,12 +133,12 @@ const GetConversationFunction = asyncHandler(async (req, res, next) => {
 const CreateMessageFunction = asyncHandler(async (req, res, next) => {
     const { conversationId, senderId, message, time, date } = req.body;
     if (!senderId || !message) return res.status(400).json({ message: "Please Fill all required fields" })
-    await Message.create({ conversationId, senderId, message, time, date });
+    const newMessage = await Message.create({ conversationId, senderId, message, time, date });
     await Conversation.updateOne(
         { "_id": conversationId },
         { $set: { "latestMessage": message, "latestMessageTime": time, 'latestMessageDate': date } }
     )
-    return res.status(200).json({ message: 'Message sent   successfully' });
+    return res.status(200).json({ message: 'Message sent   successfully', conversationId: conversationId, _id: newMessage._id });
 
 })
 // ********************************************************************
@@ -202,7 +202,6 @@ const ClearChat = asyncHandler(async (req, res, next) => {
 // ********************************************************************
 // ********************************************************************
 const DeleteConversation = asyncHandler(async (req, res, next) => {
-    console.log("Delete Conversation Called");
     const { conversationId } = req.body;
     await Messages.deleteMany({ conversationId });
     await Conversation.deleteOne({ _id: conversationId });
@@ -211,6 +210,17 @@ const DeleteConversation = asyncHandler(async (req, res, next) => {
 // ********************************************************************
 
 
+// ********************************************************************
+const deleteMessage = asyncHandler(async (req, res, next) => {
+    const { messageId } = req.body;
+    await Messages.deleteOne({ _id: messageId });
+    res.status(200).json({ "message": "Message Deleted Successfully" })
+})
+// ********************************************************************
 
 
-module.exports = { Register, Login, GetConversationFunction, CreateMessageFunction, GetMessageFunction, GetAllUsers, GetUser, CreateConversationFunction, ClearChat, DeleteConversation }
+
+
+
+
+module.exports = { Register, Login, GetConversationFunction, CreateMessageFunction, GetMessageFunction, GetAllUsers, GetUser, CreateConversationFunction, ClearChat, DeleteConversation, deleteMessage }
