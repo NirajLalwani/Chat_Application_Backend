@@ -21,10 +21,11 @@ const io = require('socket.io')(server, {
 
 
 //&MiddleWares
-app.use(cors());
-// {
-//     origin: "https://chat-application-client-two.vercel.app"  //?Allowing access only to this source
-// }
+app.use(cors(
+    {
+        origin: "https://chat-application-client-two.vercel.app"  //?Allowing access only to this source
+    }
+));
 app.use(express.json());        //?Add body in request
 app.use('/api/', userRouter);
 
