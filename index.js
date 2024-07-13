@@ -9,11 +9,11 @@ const Message = require('./models/Messages')
 const connectDB = require("./DB/connection")
 const userRouter = require('./Routes/userRoutes');
 const Conversation = require('./models/Conserversations');
+const { ClearChat } = require('./Controllers/userController');
 const server = require("http").createServer(app) //?Creating server for both socketio and Express app
 const io = require('socket.io')(server, {
     cors: {
         origin: "*"
-
     }
 }
 
@@ -114,6 +114,43 @@ io.on('connection', socket => {
         const sender = users.find(user => user.userId === senderId);
         const receiver = users.find(user => user.userId === receiverId);
         const messagess = await Message.find({ conversationId })
+        console.log("SENDER", sender)
+        console.log("RECEIVER", receiver)
+        const data = await Conversation.findOne({ _id: conversationId })
+        if (messagess.length !== 0) {
+            if (data.latestMessage !== messagess[messagess.length - 1].message || data.latestMessageTime !== messagess[messagess.length - 1].time) {
+
+                let obj = {
+                    message: messagess[messagess.length - 1].message,
+                    time: messagess[messagess.length - 1].time,
+                    conversationId
+                }
+                await Conversation.updateOne(
+                    { "_id": conversationId },
+                    { $set: { "latestMessage": obj.message, "latestMessageTime": obj.time } }
+                )
+                if (receiver) {
+                    io.to(receiver.socketId).to(sender.socketId).emit('getLatestMessage', obj)
+                } else {
+                    io.to(sender.socketId).emit('getLatestMessage', obj)
+                }
+            }
+        } else {
+            await Conversation.updateOne(
+                { "_id": conversationId },
+                { $set: { "latestMessage": "" } }
+            )
+            let obj = {
+                ClearChat: true,
+                conversationId
+            }
+            if (receiver) {
+                io.to(receiver.socketId).to(sender.socketId).emit('getLatestMessage', obj)
+            } else {
+                io.to(sender.socketId).emit('getLatestMessage', obj)
+            }
+        }
+
 
         if (receiver) {
             io.to(receiver.socketId).to(sender.socketId).emit('getMessagessAfterDeleting', messagess)
