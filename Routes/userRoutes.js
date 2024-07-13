@@ -19,6 +19,7 @@ router.route('/delteConversation').delete(userController.DeleteConversation)
 router.route('/clearChat').delete(userController.ClearChat)
 
 router.route('/deleteMessage').delete(userController.deleteMessage)
+router.route('/account').delete(userController.deleteAccount)
 
 
 module.exports = router;

@@ -220,7 +220,24 @@ const deleteMessage = asyncHandler(async (req, res, next) => {
 
 
 
+// ********************************************************************
+const deleteAccount = asyncHandler(async (req, res, next) => {
+    console.log("Delete Called");
+    const { _id } = req.body;
+    let user = await Users.findById(_id);
+    let conversations = await Conversation.find({ $or: [{ User_1: _id }, { User_2: _id }] });
+    conversations.map(async (curr) => {
+        await Messages.deleteMany({ conversationId: curr._id });
+    })
+    await Conversation.deleteMany({ $or: [{ User_1: _id }, { User_2: _id }] })
+    await Users.deleteOne({ _id })
+    res.status(200).json({ "message": "Message Deleted Successfully" })
+})
+// ********************************************************************
 
 
 
-module.exports = { Register, Login, GetConversationFunction, CreateMessageFunction, GetMessageFunction, GetAllUsers, GetUser, CreateConversationFunction, ClearChat, DeleteConversation, deleteMessage }
+
+
+
+module.exports = { Register, Login, GetConversationFunction, CreateMessageFunction, GetMessageFunction, GetAllUsers, GetUser, CreateConversationFunction, ClearChat, DeleteConversation, deleteMessage, deleteAccount }
