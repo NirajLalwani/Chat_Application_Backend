@@ -9,7 +9,6 @@ const Message = require('./models/Messages')
 const connectDB = require("./DB/connection")
 const userRouter = require('./Routes/userRoutes');
 const Conversation = require('./models/Conserversations');
-const { ClearChat } = require('./Controllers/userController');
 const server = require("http").createServer(app) //?Creating server for both socketio and Express app
 const io = require('socket.io')(server, {
     cors: {

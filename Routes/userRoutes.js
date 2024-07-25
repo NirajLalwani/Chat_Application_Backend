@@ -21,5 +21,6 @@ router.route('/clearChat').delete(userController.ClearChat)
 router.route('/deleteMessage').delete(userController.deleteMessage)
 router.route('/account').delete(userController.deleteAccount)
 
+router.route('/updateTheme').patch(userController.ChangeTheme)
 
 module.exports = router;

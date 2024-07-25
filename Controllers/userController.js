@@ -170,7 +170,6 @@ const GetAllUsers = asyncHandler(async (req, res, next) => {
 
 
 // ********************************************************************
-// ********************************************************************
 const GetUser = asyncHandler(async (req, res, next) => {
 
     const token = req.params.token;
@@ -180,7 +179,7 @@ const GetUser = asyncHandler(async (req, res, next) => {
         if (payload) {
             const userExists = await Users.findById(payload.userId);    //?Double Checking the user with useId stored in payload Exists or not
             if (userExists) {   //?If User Exists The Sending UserData in the Resopnse
-                return res.status(200).json({ userId: payload.userId, image: payload.image, email: payload.email, fullName: payload.name })
+                return res.status(200).json({ userId: payload.userId, image: payload.image, email: payload.email, fullName: payload.name, theme: userExists.theme })
             }
         }
         return res.status(400).json({ message: "Not Valid User" });
@@ -189,6 +188,11 @@ const GetUser = asyncHandler(async (req, res, next) => {
     }
 
 })
+// ********************************************************************
+
+
+
+
 // ********************************************************************
 const ClearChat = asyncHandler(async (req, res, next) => {
     const { conversationId } = req.body;
@@ -200,6 +204,10 @@ const ClearChat = asyncHandler(async (req, res, next) => {
     res.status(200).json({ "messages": "Chat Deleted Successfully" });
 })
 // ********************************************************************
+
+
+
+
 // ********************************************************************
 const DeleteConversation = asyncHandler(async (req, res, next) => {
     const { conversationId } = req.body;
@@ -210,6 +218,8 @@ const DeleteConversation = asyncHandler(async (req, res, next) => {
 // ********************************************************************
 
 
+
+
 // ********************************************************************
 const deleteMessage = asyncHandler(async (req, res, next) => {
     const { messageId } = req.body;
@@ -217,6 +227,7 @@ const deleteMessage = asyncHandler(async (req, res, next) => {
     res.status(200).json({ "message": "Message Deleted Successfully" })
 })
 // ********************************************************************
+
 
 
 
@@ -237,7 +248,21 @@ const deleteAccount = asyncHandler(async (req, res, next) => {
 
 
 
+// ********************************************************************
+const ChangeTheme = asyncHandler(async (req, res, next) => {
+
+    const { _id } = req.body;
+    const user = await Users.findById(_id);
+    console.log(user)
+    user.theme === 'light' ? user.theme = 'dark' : user.theme = 'light';
+    user.save();
+    res.status(200).json({ "message": "Theme Updated Successfully" })
+})
+// ********************************************************************
 
 
 
-module.exports = { Register, Login, GetConversationFunction, CreateMessageFunction, GetMessageFunction, GetAllUsers, GetUser, CreateConversationFunction, ClearChat, DeleteConversation, deleteMessage, deleteAccount }
+
+
+
+module.exports = { Register, Login, GetConversationFunction, CreateMessageFunction, GetMessageFunction, GetAllUsers, GetUser, CreateConversationFunction, ClearChat, DeleteConversation, deleteMessage, deleteAccount, ChangeTheme }
