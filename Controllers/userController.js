@@ -180,7 +180,7 @@ const GetUser = asyncHandler(async (req, res, next) => {
         if (payload) {
             const userExists = await Users.findById(payload.userId);    //?Double Checking the user with useId stored in payload Exists or not
             if (userExists) {   //?If User Exists The Sending UserData in the Resopnse
-                return res.status(200).json({ userId: payload.userId, image: payload.image, email: payload.email, fullName: payload.name, theme: userExists.theme })
+                return res.status(200).json({ userId: payload.userId, image: payload.image, email: payload.email, fullName: payload.name, theme: userExists.theme ,LiveMessage:userExists.liveMessage})
             }
         }
         return res.status(400).json({ message: "Not Valid User" });
@@ -254,7 +254,6 @@ const ChangeTheme = asyncHandler(async (req, res, next) => {
 
     const { _id } = req.body;
     const user = await Users.findById(_id);
-    console.log(user)
     user.theme === 'light' ? user.theme = 'dark' : user.theme = 'light';
     user.save();
     res.status(200).json({ "message": "Theme Updated Successfully" })
@@ -263,7 +262,20 @@ const ChangeTheme = asyncHandler(async (req, res, next) => {
 
 
 
+// ********************************************************************
+const LiveMessage = asyncHandler(async (req, res, next) => {
+
+    const { _id } = req.body;
+    const user = await Users.findById(_id);
+    user.liveMessage === false ? user.liveMessage = true : user.liveMessage = false;
+    user.save();
+    res.status(200).json({ "message": "LiveMessage Updated Successfully" })
+})
+// ********************************************************************
 
 
 
-module.exports = { Register, Login, GetConversationFunction, CreateMessageFunction, GetMessageFunction, GetAllUsers, GetUser, CreateConversationFunction, ClearChat, DeleteConversation, deleteMessage, deleteAccount, ChangeTheme }
+
+
+
+module.exports = { Register, Login, GetConversationFunction, CreateMessageFunction, GetMessageFunction, GetAllUsers, GetUser, CreateConversationFunction, ClearChat, DeleteConversation, deleteMessage, deleteAccount, ChangeTheme, LiveMessage }

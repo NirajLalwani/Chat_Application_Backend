@@ -22,8 +22,11 @@ const userSchema = mongoose.Schema({
     theme: {
         type: String,
         default: "light"
+    },
+    liveMessage: {
+        type: Boolean,
+        default: true
     }
-
 })
 
 

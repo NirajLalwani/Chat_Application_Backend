@@ -22,5 +22,6 @@ router.route('/deleteMessage').delete(userController.deleteMessage)
 router.route('/account').delete(userController.deleteAccount)
 
 router.route('/updateTheme').patch(userController.ChangeTheme)
+router.route('/liveMessage').patch(userController.LiveMessage)
 
 module.exports = router;

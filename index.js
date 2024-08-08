@@ -87,6 +87,7 @@ io.on('connection', socket => {
     })
 
     socket.on("updateCurrentlyTypingMessage", ({ conversationId, typingMessage, receiverId, senderId }) => {
+        console.log(conversationId, "Conversation ID")
         const receiver = users.find(user => user.userId === receiverId);
         if (receiver) {
             const data = {
