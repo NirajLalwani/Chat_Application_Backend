@@ -21,10 +21,11 @@ const io = require('socket.io')(server, {
 
 //&MiddleWares
 app.use(cors(
+
     {
-        origin: "https://chat-application-client-two.vercel.app"  //?Allowing access only to this source
-    }
-));
+            origin: "https://chat-application-client-two.vercel.app"  //?Allowing access only to this source
+        }
+    ));
 app.use(express.json());        //?Add body in request
 app.use('/api/', userRouter);
 
@@ -86,6 +87,18 @@ io.on('connection', socket => {
         }
     })
 
+    socket.on("updateCurrentlyTypingMessage", ({ conversationId, typingMessage, receiverId, senderId }) => {
+        const receiver = users.find(user => user.userId === receiverId);
+        if (receiver) {
+            const data = {
+                typingMessage,
+                conversationId,
+                receiverId: senderId
+            }
+            io.to(receiver.socketId).emit('getTypingMessage', data)
+        }
+    })
+
     socket.on("clearChat", ({ senderId, receiverId, conversationId }) => {
         const sender = users.find(user => user.userId === senderId);
         const receiver = users.find(user => user.userId === receiverId);
@@ -109,6 +122,7 @@ io.on('connection', socket => {
             io.to(sender.socketId).emit('getDelteConversation', data)
         }
     })
+
     socket.on("getMessagesAfterDelete", async ({ senderId, receiverId, conversationId }) => {
         const sender = users.find(user => user.userId === senderId);
         const receiver = users.find(user => user.userId === receiverId);

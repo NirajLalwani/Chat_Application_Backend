@@ -96,7 +96,7 @@ const GetConversationFunction = asyncHandler(async (req, res, next) => {
         const allConverstion = await Conversation.find({ $or: [{ User_1: userId }, { User_2: userId }] })
 
 
-        const OtherUserData = await Promise.all(allConverstion.map(async ({ User_1, User_2, _id, latestMessage, latestMessageTime, latestMessageDate }) => {             //?Mapping all conversation to send only receiver's data
+        const OtherUserData = await Promise.all(allConverstion.map(async ({ User_1, User_2, _id, latestMessage, latestMessageTime, latestMessageDate, }) => {             //?Mapping all conversation to send only receiver's data
 
             let secondUserId = (User_1 === userId) ? User_2 : User_1;  //?Finding which one is receiver
 
@@ -112,7 +112,8 @@ const GetConversationFunction = asyncHandler(async (req, res, next) => {
                     userId: CurrUser._id,
                     latestMessage: latestMessage,
                     time: latestMessageTime,
-                    date: latestMessageDate
+                    date: latestMessageDate,
+                    ReceiverTypingMessage: ""
                 }
                 return CurrUser
             }
